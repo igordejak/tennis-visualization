@@ -1,0 +1,777 @@
+/* ---- reset ----- */
+html,
+body,
+body div,
+span,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+abbr,
+address,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+samp,
+small,
+strong,
+sub,
+sup,
+var,
+b,
+i,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+figure,
+footer,
+header,
+menu,
+nav,
+section,
+time,
+mark,
+audio,
+video,
+details,
+summary {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font-weight: normal;
+    vertical-align: baseline;
+    background: transparent;
+}
+
+main,
+article,
+aside,
+figure,
+footer,
+nav,
+section,
+details,
+summary {
+    display: block;
+}
+
+html {
+    box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+    box-sizing: inherit;
+}
+
+img,
+object,
+embed {
+    max-width: 100%;
+}
+
+html {
+    overflow-y: scroll;
+}
+
+
+/* ------ style ----- */
+
+body {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.game-block {
+    background-color: #393939;
+    width: 580px;
+    margin: 20px auto;
+    padding: 20px;
+    color: #e4e4e4;
+    font-family: sans-serif;
+    font-size: 14px;
+}
+
+.names-scores {
+    display: flex;
+    justify-content: center;
+
+    .team {
+        font-size: 20px;
+        font-weight: 500;
+        display: flex;
+        width: 50%;
+
+        &:first-of-type {
+            justify-content: flex-end;
+        }
+
+        &:nth-of-type(2) {
+            .scores {
+                order: 1;
+            }
+
+            .team-name {
+                order: 2;
+            }
+
+            .scores:after {
+                background-color: #fff;
+            }
+        }
+
+        .scores {
+            margin: 0 2px;
+            width: 40px;
+            flex-basis: 40px;
+            font-size: 22px;
+            color: #f1cb6b;
+            text-align: center;
+
+            &:after {
+                content: "";
+                display: block;
+                width: 100%;
+                height: 4px;
+                background-color: #f8a07b;
+                margin-top: 8px;
+            }
+
+        }
+    }
+}
+
+.field {
+    width: 542px;
+    height: 246px;
+    margin: 10px auto;
+    background-size: cover;
+    position: relative;
+
+    &.tennis {
+        background-image: url(../img/tennis-field.svg);
+    }
+
+    .team-one,
+    .team-two {
+        width: 230px;
+    }
+
+    .team-one,
+    .team-two,
+    .line {
+        position: absolute;
+    }
+
+    .team-two {
+        text-align: right;
+    }
+
+    .line {
+        height: 34px;
+        width: 3px;
+        display: block;
+    }
+
+    .team-one {
+        .line {
+            background-color: #f8a07b;
+        }
+    }
+
+    .team-two {
+        .line {
+            background-color: #fff;
+        }
+    }
+
+    &.initial {
+
+        .event,
+        .points {
+            display: none;
+        }
+
+        .team-one,
+        .team-two {
+            .name {
+                white-space: pre-line;
+            }
+        }
+
+        .ball-trace {
+            display: block;
+        }
+
+        .team-one {
+            &.position-bottom {
+                bottom: 30px;
+                left: 20px;
+
+                .line {
+                    bottom: 0px;
+                    left: -10px;
+                }
+            }
+        }
+
+        .team-two {
+            &.position-top {
+                right: 20px;
+                top: 24px;
+
+                .line {
+                    top: 0px;
+                    right: -10px;
+                }
+            }
+        }
+    }
+
+    &.ace {
+        .team-two {
+            display: none;
+        }
+
+        .team-one {
+            animation: text-to-ace 0.4s 0.5s forwards;
+            z-index: 1;
+
+            &.position-bottom {
+                bottom: 30px;
+                left: 20px;
+                opacity: 0;
+            }
+
+            .line {
+                animation: to-center-right 0.4s 0.5s;
+                animation-fill-mode: forwards;
+                height: 60px;
+            }
+
+            .name {
+                font-size: 18px;
+                color: #fff;
+            }
+
+            .event {
+                font-size: 18px;
+                color: #ffcd58;
+
+                .description {
+                    font-size: 14px;
+                    color: #e4e4e4;
+                }
+            }
+
+            .points {
+                display: none;
+            }
+        }
+
+        .ace-ball {
+            display: block;
+            position: absolute;
+            top: 50%;
+            margin-top: -65px;
+            left: 50%;
+            margin-left: -170px;
+            width: 340px;
+            height: 130px;
+            background-image: url(../img/trajectory.svg);
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 0;
+
+            .flying-ball {
+                animation: ace-ball 0.3s 0.2s forwards;
+                width: 32px;
+                position: absolute;
+            }
+        }
+
+        &:after {
+            content: "";
+            display: block;
+            animation: flash 0.2s forwards;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #fff;
+        }
+    }
+
+    &.results {
+
+        .team-one,
+        .team-two {
+
+            .description,
+            .event {
+                display: none;
+            }
+
+            .name {
+                white-space: pre-line;
+            }
+        }
+
+        .team-one {
+            &.position-bottom {
+                top: 24px;
+                left: 20px;
+
+                .line {
+                    top: 10px;
+                    left: -10px;
+                    animation: t-one-results 1.5s forwards;
+                }
+            }
+
+            .points {
+                color: #ffce4e;
+            }
+
+            .scores {
+                right: -6px;
+                top: 88px;
+
+                .old {
+                    animation: to-top 0.3s 1.8s forwards;
+                }
+
+            }
+        }
+
+        .team-two {
+            &.position-top {
+                right: 20px;
+                bottom: 30px;
+
+                .line {
+                    top: -10px;
+                    right: -10px;
+                    animation: t-two-results 1.5s forwards;
+                }
+            }
+
+            .points {
+                display: none
+            }
+
+            .scores {
+                top: -71px;
+                left: -11px;
+            }
+        }
+
+        .scores {
+            display: block;
+            position: absolute;
+            animation: fade-in 0.2s 1.5s forwards;
+            width: 30px;
+            height: 30px;
+            overflow: hidden;
+            font-size: 24px;
+            color: #ffce4e;
+            opacity: 0;
+        }
+    }
+
+    &.second-result {
+        .team-one {
+            display: none;
+        }
+
+        .team-two {
+            text-align: left;
+            right: 20px;
+            top: 90px;
+
+            .name {
+                font-size: 18px;
+                color: #fff;
+            }
+
+            .event {
+                font-size: 18px;
+                color: #ffcd58;
+
+                .description {
+                    font-size: 14px;
+                    color: #e4e4e4;
+                }
+            }
+
+            .points {
+                display: none;
+            }
+
+            .line {
+                left: -10px;
+                top: 18px;
+                animation: line-to-left 0.2s forwards;
+            }
+        }
+    }
+
+    .ace-ball {
+        display: none;
+    }
+
+    .scores {
+        display: none;
+    }
+
+
+
+    .ball-trace {
+        position: absolute;
+        display: none;
+
+        &.bottom-left {
+            bottom: 45px;
+            left: 65px;
+        }
+
+        #ball1 {
+            opacity: 0;
+            animation: ball-start 1.5s 0.1s infinite;
+            ;
+        }
+
+        #ball2 {
+            opacity: 0;
+            animation: ball-start 1.5s 0.2s infinite;
+            ;
+        }
+
+        #ball3 {
+            opacity: 0;
+            animation: ball-start 1.5s 0.3s infinite;
+            ;
+        }
+
+        #ball4 {
+            opacity: 0;
+            animation: ball-start 1.5s 0.4s infinite;
+            ;
+        }
+
+        #ball5 {
+            opacity: 0;
+            animation: ball-start 1.5s 0.5s infinite;
+            ;
+        }
+
+        #ball6 {
+            opacity: 0;
+            animation: ball-start 1.5s 0.6s infinite;
+            ;
+        }
+    }
+}
+
+.statistic {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    text-align: center;
+    margin-bottom: 20px;
+    color: #8a8a8a;
+
+    .percents {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        flex-basis: 60%;
+
+        .percent-name {
+            width: 100%;
+
+        }
+
+        .first-number,
+        .second-number {
+            flex-basis: 49%;
+            font-size: 20px;
+            height: 36px;
+            position: relative;
+            margin-bottom: 8px;
+            color: #fff;
+
+            .visualization {
+                display: block;
+                position: absolute;
+                height: 3px;
+                background-color: #fff;
+                bottom: 0;
+                border-radius: 2px;
+                z-index: 2
+            }
+
+            &:after {
+                content: "";
+                display: block;
+                position: absolute;
+                width: 140px;
+                height: 3px;
+                background-color: #8a8a8a;
+                bottom: 0;
+                border-radius: 2px;
+            }
+        }
+
+        .first-number {
+            .visualization {
+                right: 0;
+                background-color: #f8a07b;
+            }
+
+            &:after {
+                right: 0;
+            }
+        }
+
+        .second-number {
+            .visualization {
+                left: 0;
+            }
+
+            &:after {
+                left: 0;
+            }
+        }
+    }
+
+    .result {
+        flex-basis: 15%;
+
+        .data {
+            font-size: 20px;
+            height: 36px;
+            position: relative;
+            margin-bottom: 8px;
+            color: #fff;
+
+            &:after {
+                content: "";
+                display: block;
+                position: absolute;
+                width: 30px;
+                height: 3px;
+                background-color: #fff;
+                bottom: 0;
+                left: 50%;
+                margin-left: -15px;
+                border-radius: 2px;
+            }
+        }
+
+        &:first-of-type {
+            .data {
+                &:after {
+                    background-color: #f8a07b;
+                }
+            }
+        }
+    }
+}
+
+@keyframes ball-start {
+    0% {
+        opacity: 0;
+    }
+
+    1% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes to-center-right {
+    0% {
+        bottom: 0px;
+        right: 240px;
+    }
+
+    50% {
+        right: 50%;
+        transform: rotate(90deg);
+    }
+
+    100% {
+        bottom: 0px;
+        right: -10px;
+        transform: rotate(180deg);
+    }
+}
+
+@keyframes text-to-ace {
+    0% {
+        text-align: left;
+        bottom: 0px;
+        left: -10px;
+        opacity: 0;
+
+    }
+
+    100% {
+
+        text-align: right;
+        left: 20px;
+        bottom: 86px;
+        opacity: 1;
+    }
+}
+
+@keyframes ace-ball {
+    0% {
+        top: 0;
+        left: 0;
+    }
+
+    50% {
+        top: 90%;
+        left: 55%;
+    }
+
+    100% {
+        top: 0;
+        left: 95%;
+    }
+}
+
+@keyframes flash {
+    0% {
+        opacity: 0;
+        visibility: hidden;
+    }
+
+    99% {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    100% {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+
+@keyframes t-one-results {
+    0% {
+        top: 10px;
+        left: -10px;
+    }
+
+    20% {
+        top: 0px;
+        left: -10px;
+    }
+
+    50% {
+        top: 0px;
+        left: -10px;
+        transform: rotate(0deg);
+    }
+
+    100% {
+        top: 100px;
+        left: 220px;
+        transform: rotate(90deg);
+    }
+}
+
+@keyframes t-two-results {
+    0% {
+        top: -10px;
+        right: -10px;
+    }
+
+    20% {
+        top: 0px;
+        right: -10px;
+    }
+
+    50% {
+        top: 0px;
+        right: -10px;
+        transform: rotate(0deg);
+    }
+
+    100% {
+        top: -58px;
+        right: 225px;
+        transform: rotate(90deg);
+    }
+}
+
+@keyframes to-top {
+    0% {
+        margin-top: 0;
+    }
+
+    100% {
+        margin-top: -30px;
+    }
+}
+
+@keyframes fade-in {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes line-to-left {
+    0% {
+        transform: rotate(90deg);
+    }
+
+    100% {
+        transform: rotate(0deg);
+        left: -10px;
+        height: 56px;
+        top: 4px;
+    }
+}
